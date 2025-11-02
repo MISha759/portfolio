@@ -1,438 +1,301 @@
 <!DOCTYPE html>
-<html lang="sk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interaktívna mapa Žilinského kraja</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #3498db;
-            --secondary-color: #2c3e50;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #2c3e50;
-            --success-color: #2ecc71;
-            --warning-color: #f39c12;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f7fa;
-            color: var(--dark-color);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-            color: white;
-            padding: 20px 0;
-            border-radius: 0 0 10px 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            text-align: center;
-            margin: 0;
-            font-size: 2.2rem;
-            font-weight: 600;
-        }
-
-        .subtitle {
-            text-align: center;
-            font-size: 1rem;
-            opacity: 0.9;
-            margin-top: 8px;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .control-panel {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            height: fit-content;
-        }
-
-        .panel-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--secondary-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .panel-title i {
-            color: var(--primary-color);
-        }
-
-        .filter-group {
-            margin-bottom: 20px;
-        }
-
-        .filter-option {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-            padding: 8px 12px;
-            border-radius: 6px;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .filter-option:hover {
-            background-color: rgba(52, 152, 219, 0.1);
-        }
-
-        .filter-option input {
-            margin-right: 10px;
-            cursor: pointer;
-        }
-
-        .filter-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-grow: 1;
-        }
-
-        .filter-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-        }
-
-        .search-box {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 10px 15px 10px 40px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #7f8c8d;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .stat-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 12px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
-
-        #map {
-            height: 700px;
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            z-index: 1;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #7f8c8d;
-            font-style: italic;
-        }
-
-        .custom-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            border: 2px solid white;
-        }
-
-        .school-icon {
-            background-color: var(--primary-color);
-        }
-
-        .police-icon {
-            background-color: var(--accent-color);
-        }
-
-        .hospital-icon {
-            background-color: var(--success-color);
-        }
-
-        .post-icon {
-            background-color: var(--warning-color);
-        }
-
-        .legend {
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-            line-height: 1.5;
-            font-size: 0.9rem;
-        }
-
-        .legend i {
-            width: 18px;
-            height: 18px;
-            float: left;
-            margin-right: 8px;
-            opacity: 0.9;
-            border-radius: 50%;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
-    </style>
+    <title>Mykhailo Lypenko | Product Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1><i class="fas fa-map-marked-alt"></i> Interaktívna mapa Žilinského kraja</h1>
-            <p class="subtitle">Objavte rôzne inštitúcie a objekty v regióne</p>
-        </div>
-    </header>
-
+<header id="header">
     <div class="container">
-        <div class="dashboard">
-            <div class="control-panel">
-                <div class="panel-title">
-                    <i class="fas fa-filter"></i> Filtre
-                </div>
-                <div class="filter-group">
-                    <div class="filter-option">
-                        <input type="checkbox" id="schools" checked>
-                        <div class="filter-label">
-                            <div class="filter-icon school-icon"><i class="fas fa-school"></i></div>
-                            Školy
-                        </div>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="police" checked>
-                        <div class="filter-label">
-                            <div class="filter-icon police-icon"><i class="fas fa-shield-alt"></i></div>
-                            Polícia
-                        </div>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="hospitals" checked>
-                        <div class="filter-label">
-                            <div class="filter-icon hospital-icon"><i class="fas fa-hospital"></i></div>
-                            Nemocnice
-                        </div>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="post" checked>
-                        <div class="filter-label">
-                            <div class="filter-icon post-icon"><i class="fas fa-mail-bulk"></i></div>
-                            Pošty
-                        </div>
-                    </div>
-                </div>
+        <nav>
+            <div class="logo">MYKHAILO LYPENKO</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </div>
+</header>
 
-                <div class="search-box">
-                    <input type="text" id="search-input" placeholder="Vyhľadať...">
-                    <div class="search-icon"><i class="fas fa-search"></i></div>
-                </div>
+<section id="home" class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>Product Manager<br>& Project Lead</h1>
+            <p>Bridging technical expertise with business strategy to create products that deliver real value and drive growth.</p>
+            <div class="hero-btns">
+                <a href="#projects" class="btn btn-gold">
+                    <i class="fas fa-rocket"></i>
+                    View My Work
+                </a>
+                <a href="#contact" class="btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Get In Touch
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="floating-text floating-text-1">PRODUCT</div>
+    <div class="floating-text floating-text-2">MANAGER</div>
+    <div class="particles" id="particles"></div>
+</section>
 
-                <div class="stats">
-                    <div class="stat-card">
-                        <div class="stat-value" id="total-schools">0</div>
-                        <div class="stat-label">Školy</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="total-police">0</div>
-                        <div class="stat-label">Polícia</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="total-hospitals">0</div>
-                        <div class="stat-label">Nemocnice</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="total-posts">0</div>
-                        <div class="stat-label">Pošty</div>
+<section id="about" class="about">
+    <div class="container">
+        <h2>About Me</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>Hello! I'm <span class="highlight">Mykhailo Lypenko</span>, an aspiring Product Manager with a <span class="accent">technical background in programming</span> and strong skills in management, product development, and marketing.</p>
+                <p>I'm passionate about the entire product creation process — from concept to delivery. My technical expertise allows me to communicate effectively with developers and bridge the gap between the team and stakeholders.</p>
+                <p>Strong soft skills help me build trust, navigate uncertainty, and foster productive collaboration. I'm result-oriented, open to new challenges, and driven to create products that deliver real value to people.</p>
+                <div class="skills">
+                    <span class="skill-tag">Product Strategy</span>
+                    <span class="skill-tag">Roadmapping</span>
+                    <span class="skill-tag">Agile Methodology</span>
+                    <span class="skill-tag">User Research</span>
+                    <span class="skill-tag">Data Analysis</span>
+                    <span class="skill-tag">Stakeholder Management</span>
+                    <span class="skill-tag">A/B Testing</span>
+                    <span class="skill-tag">Market Analysis</span>
+                    <span class="skill-tag">Technical Communication</span>
+                    <span class="skill-tag">Cross-functional Leadership</span>
+                </div>
+            </div>
+            <div class="about-image">
+                <div class="image-container">
+                    <img src="IMG_9769.JPG" alt="Myself" class="image">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="experience" class="experience">
+    <div class="container">
+        <h2>Experience</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2024 - 2025</div>
+                    <h3 class="timeline-title">Digital Product Manager</h3>
+                    <p><span class="highlight">Mix-Line LLC</span> (Remote)</p>
+                    <p>Led the development of the company's corporate website, coordinated marketing and technical teams, and improved user experience.</p>
+                    <div class="achievement">
+                        <strong>Key Achievement:</strong> Resulted in a <span class="accent">30%+ increase in online sales</span> through strategic improvements and enhanced user experience.
                     </div>
                 </div>
             </div>
-
-            <div id="map" class="map"></div>
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2025</div>
+                    <h3 class="timeline-title">Work and Travel Program</h3>
+                    <p><span class="highlight">International Experience</span> (USA)</p>
+                    <p>Gained valuable international experience which strengthened my communication skills, adaptability, and ability to collaborate in multicultural environments.</p>
+                </div>
+            </div>
         </div>
     </div>
+</section>
 
-    <footer>
-        <p>Mapu poskytol Žilinský kraj | <a href="https://github.com/yourusername">GitHub</a></p>
-    </footer>
+<section id="education" class="education">
+    <div class="container">
+        <h2>Education</h2>
+        <div class="education-content">
+            <div class="education-item">
+                <div class="education-date">Sep 2023 - Jun 2026</div>
+                <h3 class="education-title">Bachelor of Computer Science</h3>
+                <p><span class="highlight">Technical University of Košice</span></p>
+                <p>Focus on IT Management, Programming, and Product Development</p>
+            </div>
+            <div class="education-item">
+                <h3 class="education-title">Skills Developed</h3>
+                <div class="skill-list">
+                    <span class="skill-tag">IT Management</span>
+                    <span class="skill-tag">Programming</span>
+                    <span class="skill-tag">Product Development</span>
+                    <span class="skill-tag">Computer Science</span>
+                    <span class="skill-tag">Management</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-    <script>
-        const map = L.map('map').setView([49.212, 19.576], 10);
+<section id="skills" class="skills-section">
+    <div class="container">
+        <h2>Skills</h2>
+        <div class="skills-categories">
+            <div class="skill-category">
+                <h3>Product Management</h3>
+                <div class="skill-list">
+                    <span class="skill-tag">Product Strategy</span>
+                    <span class="skill-tag">Roadmapping</span>
+                    <span class="skill-tag">Software Product Management</span>
+                    <span class="skill-tag">Product Marketing</span>
+                    <span class="skill-tag">Product Development</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>Technical Skills</h3>
+                <div class="skill-list">
+                    <span class="skill-tag">Digital Production</span>
+                    <span class="skill-tag">User Experience (UX)</span>
+                    <span class="skill-tag">IT Management</span>
+                    <span class="skill-tag">Programming</span>
+                    <span class="skill-tag">Software Development</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>Management & Leadership</h3>
+                <div class="skill-list">
+                    <span class="skill-tag">Team Management</span>
+                    <span class="skill-tag">Team Leadership</span>
+                    <span class="skill-tag">Project Management</span>
+                    <span class="skill-tag">Program Management</span>
+                    <span class="skill-tag">Stakeholder Management</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>Business & Communication</h3>
+                <div class="skill-list">
+                    <span class="skill-tag">Communication</span>
+                    <span class="skill-tag">Management</span>
+                    <span class="skill-tag">Data Analysis</span>
+                    <span class="skill-tag">Market Analysis</span>
+                    <span class="skill-tag">A/B Testing</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        }).addTo(map);
+<section id="languages" class="languages">
+    <div class="container">
+        <h2>Languages</h2>
+        <div class="languages-grid">
+            <div class="language-item">
+                <div class="language-name">Ukrainian</div>
+                <div class="language-level">Native or bilingual proficiency</div>
+            </div>
+            <div class="language-item">
+                <div class="language-name">Russian</div>
+                <div class="language-level">Native or bilingual proficiency</div>
+            </div>
+            <div class="language-item">
+                <div class="language-name">English</div>
+                <div class="language-level">Professional working proficiency</div>
+            </div>
+            <div class="language-item">
+                <div class="language-name">Slovak</div>
+                <div class="language-level">Full professional proficiency</div>
+            </div>
+            <div class="language-item">
+                <div class="language-name">Czech</div>
+                <div class="language-level">Limited working proficiency</div>
+            </div>
+        </div>
+    </div>
+</section>
 
-        const markers = L.markerClusterGroup();
-
-        const locations = [
-            // Примерная структура для всех объектов
-            { type: 'school', name: 'Základná škola', lat: 49.213, lon: 19.576, address: 'Školská 1, Žilina' },
-            { type: 'police', name: 'Polícia', lat: 49.215, lon: 19.578, address: 'Policajná 2, Žilina' },
-            { type: 'hospital', name: 'Nemocnica', lat: 49.216, lon: 19.580, address: 'Nemocničná 3, Žilina' },
-            { type: 'post', name: 'Pošta', lat: 49.217, lon: 19.582, address: 'Poštová 4, Žilina' },
-            // Данные для других объектов...
-        ];
-
-        let filteredLocations = locations;
-
-        function addMarkers() {
-            markers.clearLayers();
-
-            filteredLocations.forEach(location => {
-                const icon = L.divIcon({
-                    className: 'custom-icon ' + location.type + '-icon',
-                    html: '<i class="fas ' + (location.type === 'school' ? 'fa-school' : location.type === 'police' ? 'fa-shield-alt' : location.type === 'hospital' ? 'fa-hospital' : 'fa-mail-bulk') + '"></i>',
-                    iconSize: [32, 32],
-                    iconAnchor: [16, 16],
-                });
-
-                const marker = L.marker([location.lat, location.lon], { icon }).bindPopup(
-                    <div class="popup-content">
-                        <div class="popup-title">${location.name}</div>
-                        <div class="popup-type">${location.type.charAt(0).toUpperCase() + location.type.slice(1)}</div>
-                        <div class="popup-address">${location.address}</div>
+<section id="contact" class="contact">
+    <div class="container">
+        <h2>Get In Touch</h2>
+        <div class="contact-content">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
                     </div>
-                );
+                    <div>
+                        <h3>Email</h3>
+                        <p>mykhailo.lypenko@gmail.com</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div>
+                        <h3>Phone</h3>
+                        <p>+1 (123) 456-7890</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div>
+                        <h3>Location</h3>
+                        <p>Kharkiv, Ukraine · Open to remote opportunities</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div>
+                        <h3>Languages</h3>
+                        <p>Ukrainian, Russian, English, Slovak, Czech</p>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-form">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Subject" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gold">
+                        <i class="fas fa-paper-plane"></i>
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
 
-                markers.addLayer(marker);
-            });
 
-            map.addLayer(markers);
-        }
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="logo">MYCHAILO LYPENKO</div>
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/mykhailolypenko/" class="social-link">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-telegram"></i>
+                </a>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 Mykhailo Lypenko. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
 
-        function updateStats() {
-            const totalSchools = filteredLocations.filter(loc => loc.type === 'school').length;
-            const totalPolice = filteredLocations.filter(loc => loc.type === 'police').length;
-            const totalHospitals = filteredLocations.filter(loc => loc.type === 'hospital').length;
-            const totalPosts = filteredLocations.filter(loc => loc.type === 'post').length;
-
-            document.getElementById('total-schools').textContent = totalSchools;
-            document.getElementById('total-police').textContent = totalPolice;
-            document.getElementById('total-hospitals').textContent = totalHospitals;
-            document.getElementById('total-posts').textContent = totalPosts;
-        }
-
-        function filterMarkers() {
-            const filterSchools = document.getElementById('schools').checked;
-            const filterPolice = document.getElementById('police').checked;
-            const filterHospitals = document.getElementById('hospitals').checked;
-            const filterPosts = document.getElementById('post').checked;
-
-            filteredLocations = locations.filter(location => {
-                if (location.type === 'school' && filterSchools) return true;
-                if (location.type === 'police' && filterPolice) return true;
-                if (location.type === 'hospital' && filterHospitals) return true;
-                if (location.type === 'post' && filterPosts) return true;
-                return false;
-            });
-
-            addMarkers();
-            updateStats();
-        }
-
-        document.querySelectorAll('input[type="checkbox"]').forEach(input => {
-            input.addEventListener('change', filterMarkers);
-        });
-
-        // Initialize
-        addMarkers();
-        updateStats();
-
-        // Implement the search functionality
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            const searchQuery = e.target.value.toLowerCase();
-
-            filteredLocations = locations.filter(location =>
-                location.name.toLowerCase().includes(searchQuery) ||
-                location.address.toLowerCase().includes(searchQuery)
-            );
-
-            addMarkers();
-            updateStats();
-        });
-    </script>
+<script src="index.js"></script>
 </body>
 </html>
