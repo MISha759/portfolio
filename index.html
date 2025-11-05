@@ -4,29 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mykhailo Lypenko | Product Manager</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<!-- Scroll To Top Button -->
+<button id="scrollToTop" title="Go to top">
+  <i class="fas fa-chevron-up"></i>
+</button>
+
+<!-- Success popup -->
+<div id="successPopup" class="popup">
+  <div class="popup-content">
+    <i class="fas fa-paper-plane"></i>
+    <h3>Message Sent!</h3>
+    <p>Thank you for reaching out — I’ll get back to you soon.</p>
+  </div>
+</div>
+
+<!-- Header -->
 <header id="header">
-    <div class="container">
-        <nav>
-            <div class="logo">MYKHAILO LYPENKO</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#experience">Experience</a></li>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <div class="mobile-menu">
-                <i class="fas fa-bars"></i>
-            </div>
-        </nav>
-    </div>
+  <div class="container">
+    <nav>
+      <div class="logo">MYKHAILO LYPENKO</div>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="mobile-menu">
+        <i class="fas fa-bars"></i>
+      </div>
+    </nav>
+  </div>
 </header>
+
 
 <section id="home" class="hero">
     <div class="container">
@@ -34,13 +52,14 @@
             <h1>Product Manager<br>& Project Lead</h1>
             <p>Bridging technical expertise with business strategy to create products that deliver real value and drive growth.</p>
             <div class="hero-btns">
-                <a href="#projects" class="btn btn-gold">
-                    <i class="fas fa-rocket"></i>
-                    View My Work
-                </a>
+               <a href="#experience" class="btn btn-gold">
+    <i class="fas fa-rocket"></i>
+    View My Work Experience
+</a>
+
                 <a href="#contact" class="btn">
                     <i class="fas fa-paper-plane"></i>
-                    Get In Touch
+                    Contact me
                 </a>
             </div>
         </div>
@@ -90,20 +109,36 @@
                     <h3 class="timeline-title">Digital Product Manager</h3>
                     <p><span class="highlight">Mix-Line LLC</span> (Remote)</p>
                     <p>Led the development of the company's corporate website, coordinated marketing and technical teams, and improved user experience.</p>
+                    <div class="recommendation">
+  <p><strong>Recommendation:</strong> Received an official letter of recommendation from Mix-Line LLC owner, recognizing strategic leadership and digital impact.</p>
+  <a href="Mykhailo_Lypenko.pdf" target="_blank" class="gold-btn">View Letter</a>
+</div>
+
                     <div class="achievement">
-                        <strong>Key Achievement:</strong> Resulted in a <span class="accent">30%+ increase in online sales</span> through strategic improvements and enhanced user experience.
+                        <strong>Key Achievement:</strong>
+Resulted in a <span class="accensss">30%+ increase in online sales</span>
+through strategic improvements and enhanced user experience.
                     </div>
                 </div>
             </div>
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <div class="timeline-date">2025</div>
-                    <h3 class="timeline-title">Work and Travel Program</h3>
-                    <p><span class="highlight">International Experience</span> (USA)</p>
-                    <p>Gained valuable international experience which strengthened my communication skills, adaptability, and ability to collaborate in multicultural environments.</p>
-                </div>
-            </div>
-        </div>
+   <div class="timeline-item">
+    <div class="timeline-content">
+        <div class="timeline-date">2025</div>
+        <h3 class="timeline-title">Work and Travel Program</h3>
+        <p><span class="highlight">International Experience</span> (USA)</p>
+
+        <p>Gained hands-on experience living and working in a multicultural environment. Strengthened communication, teamwork, adaptability, and cultural awareness while collaborating with people from diverse backgrounds.</p>
+
+        <a href="https://www.linkedin.com/posts/mykhailolypenko_work-travel-usa-professional-and-cultural-activity-7388982577023557632-dpy6?utm_source=share&utm_medium=member_desktop" 
+           target="_blank" 
+           class="gold-btn" 
+           style="margin-top:20px; display:inline-block;">
+            View LinkedIn Post ↗
+        </a>
+    </div>
+</div>
+
+
     </div>
 </section>
 
@@ -218,7 +253,7 @@
                     </div>
                     <div>
                         <h3>Email</h3>
-                        <p>mykhailo.lypenko@gmail.com</p>
+                        <p>mykhailolypenko@outlook.com</p>
                     </div>
                 </div>
                 <div class="contact-item">
@@ -227,7 +262,7 @@
                     </div>
                     <div>
                         <h3>Phone</h3>
-                        <p>+1 (123) 456-7890</p>
+                        <p>+421 (95) 067-0046</p>
                     </div>
                 </div>
                 <div class="contact-item">
@@ -236,7 +271,7 @@
                     </div>
                     <div>
                         <h3>Location</h3>
-                        <p>Kharkiv, Ukraine · Open to remote opportunities</p>
+                        <p>Kosice, Slovakia · Open to remote opportunities</p>
                     </div>
                 </div>
                 <div class="contact-item">
@@ -295,8 +330,15 @@
         </div>
     </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  (function() {
+    emailjs.init({
+      publicKey: "vP9_1ATM4l53Xn-jG" // твой публичный ключ
+    });
+  })();
+</script>
 
 <script src="index.js"></script>
 </body>
-
 </html>
