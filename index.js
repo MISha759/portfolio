@@ -189,4 +189,19 @@ if (contactForm) {
       }
     });
   }
+// Hackathon Smooth Slider
+const slider = document.querySelectorAll('.hackathon-slider img');
+let currentSlide = 0;
+
+function nextSlide() {
+  slider[currentSlide].classList.remove('active');
+  currentSlide = (currentSlide + 1) % slider.length;
+  slider[currentSlide].classList.add('active');
+}
+
+if (slider.length > 0) {
+  slider[0].classList.add('active');
+  setInterval(nextSlide, 3500); // время переключения (3.5 сек)
+}
+
 
